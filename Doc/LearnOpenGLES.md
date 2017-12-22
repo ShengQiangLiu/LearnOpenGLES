@@ -44,7 +44,7 @@ OpenGLES iOS 的初始化环境完成。
 
 ### 二、绑定缓冲区
 
-生成渲染缓冲区（Render Buffer）和帧缓冲区（Frame Buffer），并将渲染缓冲区绑定到帧缓冲区
+生成渲染缓冲区（`Render Buffer`）和帧缓冲区（`Frame Buffer`），并将渲染缓冲区绑定到帧缓冲区
 
 ```
 glGenRenderbuffers(1, &_colorRenderBuffer);
@@ -59,7 +59,7 @@ glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER,
 ```
 #### 帧缓冲区对象（FBO）
 
-帧缓冲区对象（Frame Buffer Object），简称为 FBO。帧缓冲区是一个图像对象的容器。虽然帧缓冲区的名称中包含一个“缓冲区”字眼，但是其实它根本不是缓冲区。实际上，并不存在与一个帧缓冲区对象相关联的真正内存存储空间。相反，帧缓冲区对象是一种容器，它可以保存其它确定有内存存储并且可以进行渲染的对象，例如纹理或渲染缓冲区。
+帧缓冲区对象（`Frame Buffer Object`），简称为 FBO。帧缓冲区是一个图像对象的容器。虽然帧缓冲区的名称中包含一个“缓冲区”字眼，但是其实它根本不是缓冲区。实际上，并不存在与一个帧缓冲区对象相关联的真正内存存储空间。相反，帧缓冲区对象是一种容器，它可以保存其它确定有内存存储并且可以进行渲染的对象，例如纹理或渲染缓冲区。
 
 
  * 创建并绑定 FBO
@@ -79,7 +79,7 @@ glDeleteFramebuffers (GLsizei n, const GLuint* framebuffers)
 ```
 
 #### 渲染缓冲区对象（RBO）
-渲染缓冲区对象（Render Buffer Object），简称为 RBO。渲染缓冲区是一种图像表面，它是专门为了绑定到 FBO 设计的。一个渲染缓冲区对象可以是一个颜色表面、模版表面或者深度／模版组合表面。
+渲染缓冲区对象（`Render Buffer Object`），简称为 RBO。渲染缓冲区是一种图像表面，它是专门为了绑定到 FBO 设计的。一个渲染缓冲区对象可以是一个颜色表面、模版表面或者深度／模版组合表面。
 
 
 
@@ -133,13 +133,13 @@ glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER,
 
 附件名称         | 描述           
 --------------------|------------------
-GL_COLOR_ATTACHMENT(0-i) | 第i个颜色缓冲区（0-GL_MAX_COLOR_ATTACHMENTS-1）0为默认的颜色缓冲区   
-GL_DEPTH_ATTACHMENT       | 深度缓冲区  
-GL_STENCIL_ATTACHMENT  | 模板缓冲区
+`GL_COLOR_ATTACHMENT(0-i)` | 第i个颜色缓冲区（0-`GL_MAX_COLOR_ATTACHMENTS`-1）0为默认的颜色缓冲区   
+`GL_DEPTH_ATTACHMENT`       | 深度缓冲区  
+`GL_STENCIL_ATTACHMENT`  | 模板缓冲区
 
 ### 三、链接顶点属性
 
-现在我们向着色器中传入数据。顶点着色器允许我们指定任何以顶点属性为形式的输入。
+使用 链接顶点属性，从 CPU 向 GPU 传输数据。顶点着色器允许我们指定任何以顶点属性为形式的输入。
 
 #### 顶点坐标
 顶点坐标是标准化设备坐标(Normalized Device Coordinates, NDC)，x、y 和 z 在 -1.0 到 1.0 之间。
@@ -168,32 +168,98 @@ glEnableVertexAttribArray(positionAttrib);
 
 ![](链接顶点属性图2.png)
 
-通过 glVertexAttribPointer 函数告诉 OpenGLES 该如何解析顶点：
+通过 `glVertexAttribPointer` 函数告诉 OpenGLES 该如何解析顶点：
 
 ```
 glVertexAttribPointer (GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr)
 ```
-glVertexAttribPointer函数的参数非常多，所以我会逐一介绍它们：
+`glVertexAttribPointer`函数的参数非常多，所以我会逐一介绍它们：
 
-* 第一个参数指定我们要配置的顶点属性。我们要传入的是顶点的位置，所以传入的是顶点属性的变量值。
+* 第一个参数指定要配置的顶点属性变量。
 * 第二个参数指定顶点属性的大小。顶点属性是一个vec3，它由3个值组成，所以大小是3。
 * 第三个参数指定数据的类型，这里是 GL_FLOAT (GLSL中vec*都是由浮点数值组成的)。
-* 第四个参数表示数据是否归一化。设置为 GL_TRUE，数据的范围为 0 到 1 之间；我们这里设置为 GL_FALSE ;
-* 第五个参数叫做步长（Stride），连续顶点属性组之间的间隔。如果下个组位置数据在3个float之后，我们就会把步长设置为3 * sizeof(float)，后面讲纹理会用到。现在我们这里数据是紧密排列的，OpenGLES 会帮我们处理好（只有当数值是紧密排列时才可用）。
-* 最后一个参数表示位置数据在缓冲中起始位置的偏移量(Offset)。由于位置数据在数组的开头，所以这里是填写数组首地址。
+* 第四个参数表示数据是否归一化。设置为 GL_TRUE，数据的范围为 0 到 1 之间；一般设置为 GL_FALSE。
+* 第五个参数叫做步长（Stride）。这个顶点属性第二次出现的索引值到整个数组0位置之间有多少字节。一般没有使用缓冲区的，这个参数设置为 0，让 OpenGLES 决定步长为多少。
+* 最后一个参数表示位置数据在缓冲区中起始位置的偏移量(Offset)。一般步长设置为 0 的，这个参数设置为顶点数组首地址。
 
 告诉 OpenGLES 如何解析顶点数据之后，使用 glEnableVertexAttribArray 函数启用顶点属性；顶点属性默认是禁用的。 
 
 
 
 ## **************************
-## 顶点数据缓冲区——VBO、VAO、EBO
+## 顶点数据缓冲区
 
-名字解释如下
+从 CPU 传输数据到 GPU，有两种形式，直接传值和缓存传值。
+顶点数据缓冲区有三种形式，VBO、VAO（OpenGLES3以上）、EBO或IBO，名字解释如下：
 
-* 顶点缓冲对象：Vertex Buffer Object，VBO
-* 顶点数组对象：Vertex Array Object，VAO
-* 索引缓冲对象：Element Buffer Object，EBO或Index Buffer Object，IBO
+* 顶点缓冲对象：`Vertex Buffer Object，VBO`
+* 顶点数组对象：`Vertex Array Object，VAO`
+* 索引缓冲对象：`Element Buffer Object，EBO`或`Index Buffer Object，IBO`
 
+定义顶点数据以后，会把它作为输入发送到图形渲染管线的第一个处理阶段：顶点着色器。它会在 GPU 上创建内存用于储存顶点数据，还要配置 OpenGLES 如何解释这些内存，并且指定其如何发送到显卡。顶点着色器接着会处理在内存中指定数量的顶点。通过顶点缓冲对象（Vertex Buffer Objects, VBO）管理这个内存，它会在GPU内存（通常被称为显存）中储存大量顶点。
 
+####VBO（Vertex Buffer Object）顶点缓冲对象
+
+下面示例代码将顶点数组复制到缓冲区中
+
+```
+const GLfloat vertices[] =
+{
+    // position          // color
+    -0.5f, -0.5f, 0.0f,  0,0,0,1, // 左下，黑色
+    0.5f, -0.5f, 0.0f,   1,0,0,1, // 右下，红色
+    -0.5f, 0.5f, 0.0f,   0,0,1,1, // 左上，蓝色
+    0.5f, 0.5f, 0.0f,    0,1,0,1, // 右上，绿色
+};
+    
+GLuint VBO;
+glGenBuffers(1, &VBO);
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+// 复制顶点数组到缓冲区中使用
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+...
+glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+```
+`glGenBuffers` 函数生成缓冲ID。
+
+`glBindBuffer` 函数将缓冲ID 绑定到缓冲类型 `GL_ARRAY_BUFFER` 上，缓冲类型类型有很多种，顶点缓冲对象的缓冲类型是 `GL_ARRAY_BUFFER`。
+
+`glBufferData` 函数将顶点数据复制到缓冲的内存中。它的最后一个参数指定了内存如何管理数据的。它有三种形式：
+
+* `GL_STATIC_DRAW` ：数据不会或几乎不会改变。
+* `GL_DYNAMIC_DRAW`：数据会被改变很多。
+* `GL_STREAM_DRAW` ：数据每次绘制时都会改变。
+
+使用完缓冲区之后，记得解除缓冲区绑定。
+
+####VAO（Vertex Array Object）顶点数组对象
+
+VAO 和 VBO 绑定方式差不多，VAO 只需要在绘制之前绑定就行了，绘制完成之后解除绑定。
+
+```
+const GLfloat vertices[] =
+{
+    // position          // color
+    -0.5f, -0.5f, 0.0f,  0,0,0,1, // 左下，黑色
+    0.5f, -0.5f, 0.0f,   1,0,0,1, // 右下，红色
+    -0.5f, 0.5f, 0.0f,   0,0,1,1, // 左上，蓝色
+    0.5f, 0.5f, 0.0f,    0,1,0,1, // 右上，绿色
+};
+    
+GLuint VAO;
+glGenVertexArrays(1, &VAO);
+    
+GLuint VBO;
+glGenBuffers(1, &VBO);
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+// 复制顶点数组到缓冲区中使用
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+// 绑定 VAO
+glBindVertexArray(VAO);
+    
+```
+
+####EBO（Element Buffer Object）索引缓冲对象
 

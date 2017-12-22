@@ -20,7 +20,9 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    MTEAGLView *glView = [[MTEAGLView alloc] initWithFrame:self.view.bounds];
+//    self.view.backgroundColor = [UIColor blackColor];
+    
+    MTEAGLView *glView = [[MTEAGLView alloc] initWithFrame:CGRectMake(0, 100, self.view.frame.size.width, self.view.frame.size.width)];
     [self.view addSubview:glView];
     
     [glView setupGL];
